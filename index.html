@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tool Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom font import for aesthetics */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        :root {
+            --primary-color: #ff6000; /* Product Hunt Orange */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 5px solid transparent;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            border-left-color: var(--primary-color);
+        }
+        /* Custom style for active filter button */
+        .filter-active {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            box-shadow: 0 4px 6px -1px rgba(255, 96, 0, 0.3), 0 2px 4px -2px rgba(255, 96, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-6 p-6 bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
+                The Daily AI Launchpad
+            </h1>
+            <p class="text-xl text-gray-500">
+                Discover the latest and greatest AI tools.
+            </p>
+        </header>
+
+        <div id="filter-container" class="mb-6 p-4 bg-white rounded-xl shadow-md overflow-x-auto whitespace-nowrap">
+            <p class="text-center text-gray-500 text-sm">Loading filters...</p>
+        </div>
+
+        <div id="product-list" class="space-y-4">
+            <p class="text-center text-gray-500">Loading AI tools...</p>
+        </div>
+    </div>
+
+    <script>
+        let productsData = [];
+        let currentFilter = 'All';
+        let categorySlugMap = {}; // New map: { 'audio-music': 'Audio & Music', ... }
+
+        /**
+         * 🚨 NEW: Converts a category name into a URL-friendly slug.
+         * @param {string} text - The original category string.
+         * @returns {string} The hyphenated slug.
+         */
+        function slugify(text) {
+            if (!text) return '';
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word characters
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
+
+        /**
+         * Extracts the domain name from a full URL to use in the favicon service.
+         */
+        function getDomainFromUrl(url) {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.hostname;
+            } catch (e) {
+                console.error("Invalid URL:", url, e);
+                return '';
+            }
+        }
+
+        /**
+         * Simple CSV parser tailored for the four-column structure.
+         */
+        function parseCSV(csv) {
+            const data = [];
+            const lines = csv.trim().split('\n');
+            if (lines.length <= 1) return [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const match = line.match(/^([^,]+),([^,]+),([^,]+),"?(.*?)"?$/);
+
+                if (!match || match.length < 5) {
+                     console.warn("Skipping malformed CSV line:", line);
+                     continue;
+                }
+
+                const category = match[1].trim();
+                const name = match[2].trim();
+                let url = match[3].trim();
+                let desc = match[4].trim().replace(/^"|"$/g, '');
+
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+
+                data.push({
+                    name: name,
+                    url: url,
+                    desc: desc,
+                    tags: [category]
+                });
+            }
+            return data;
+        }
+
+        /**
+         * Gets all unique categories from the loaded data.
+         */
+        function getCategories() {
+            const categories = new Set();
+            productsData.forEach(product => {
+                if (product.tags && product.tags.length > 0) {
+                    categories.add(product.tags[0]);
+                }
+            });
+            return ['All', ...Array.from(categories).sort()];
+        }
+
+        /**
+         * Renders the category filter buttons.
+         */
+        function renderFilters() {
+            const filterContainer = document.getElementById('filter-container');
+            filterContainer.innerHTML = '';
+
+            const categories = getCategories();
+
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.textContent = category;
+                button.dataset.category = category;
+                button.className = 'inline-block px-4 py-2 mr-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 transition duration-150 whitespace-nowrap active:scale-95';
+
+                if (category === currentFilter) {
+                    button.classList.add('filter-active');
+                }
+
+                // 🚨 UPDATE: Use the slug in the URL hash
+                const categorySlug = slugify(category);
+                button.onclick = (e) => {
+                    e.preventDefault();
+                    window.location.hash = category === 'All' ? '' : categorySlug;
+                };
+
+                filterContainer.appendChild(button);
+            });
+        }
+
+        /**
+         * Filters the products and re-renders the list.
+         * @param {string} category - The category to filter by (original string, not slug).
+         */
+        function filterByCategory(category) {
+            const normalizedCategory = category || 'All';
+
+            if (currentFilter === normalizedCategory) {
+                 return;
+            }
+
+            currentFilter = normalizedCategory;
+
+            // Re-render filters to update the active state
+            renderFilters();
+
+            // Re-render products with the new filter applied
+            renderProducts();
+        }
+
+        /**
+         * Fetches the CSV, parses it, creates the slug map, and renders.
+         */
+        async function loadDataAndRender() {
+            const listContainer = document.getElementById('product-list');
+            try {
+                const response = await fetch('data.csv');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+
+                productsData = parseCSV(csvText);
+
+                if (productsData.length === 0) {
+                     listContainer.innerHTML = `
+                        <div class="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                            <p class="font-bold">No Products Found</p>
+                            <p>The 'data.csv' file was loaded but contained no valid product entries.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // 🚨 NEW: Create the Slug Map upon data load
+                const categories = getCategories();
+                categorySlugMap = {};
+                categories.forEach(category => {
+                    if (category !== 'All') {
+                        const slug = slugify(category);
+                        categorySlugMap[slug] = category;
+                    }
+                });
+                // ------------------------------------
+
+                // Check for initial URL hash (which is now a slug)
+                const initialSlug = window.location.hash.substring(1);
+
+                // 🚨 UPDATE: Look up the original category name using the slug map
+                let initialCategory = categorySlugMap[initialSlug] || 'All';
+
+                // We don't need to check against validCategories because the map only contains valid ones.
+                currentFilter = initialCategory;
+
+                // Render based on the initial state
+                renderFilters();
+                renderProducts();
+
+            } catch (e) {
+                console.error("Error loading or parsing data.csv:", e);
+                listContainer.innerHTML = `
+                    <div class="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+                        <p class="font-bold">Error Loading Data</p>
+                        <p>Could not load the product list from 'data.csv'. Please check the file path and ensure it is in the same folder. (${e.message})</p>
+                    </div>
+                `;
+            }
+        }
+
+        /**
+         * Renders the product list into the DOM, applying the current filter.
+         */
+        function renderProducts() {
+            const listContainer = document.getElementById('product-list');
+            listContainer.innerHTML = '';
+
+            const filteredProducts = productsData.filter(product =>
+                currentFilter === 'All' || product.tags.includes(currentFilter)
+            );
+
+            if (filteredProducts.length === 0) {
+                 listContainer.innerHTML = `
+                    <div class="text-center p-8 text-gray-500 bg-white rounded-xl shadow-md">
+                        <p class="text-xl font-semibold">No tools found in the "${currentFilter}" category.</p>
+                        <p class="mt-2">Try selecting "All" to view the full list.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const lu = window.lucide;
+            const getIconSvg = (name) => {
+                const icons = lu?.createIcons();
+                if (icons && icons[name]) {
+                    return icons[name].toSvg();
+                }
+                return '';
+            };
+
+            const linkSvg = getIconSvg('Link');
+
+            filteredProducts.forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card flex bg-white p-5 rounded-xl shadow-md border border-gray-100';
+
+                // --- LOGO ELEMENT (Favicon with Placeholder Fallback) ---
+                const domain = getDomainFromUrl(product.url);
+                const faviconUrl = domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : '';
+
+                const logoContainer = document.createElement('div');
+                logoContainer.className = 'flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center mr-6 shadow-md bg-white border border-gray-200 p-1';
+
+                const logoImage = document.createElement('img');
+                logoImage.src = faviconUrl;
+                logoImage.alt = `${product.name} Logo`;
+                logoImage.className = 'w-full h-full object-contain rounded-xl';
+
+                logoImage.onerror = function() {
+                    this.remove();
+                    const initial = product.name.charAt(0).toUpperCase();
+                    const fallbackColor = 'bg-gray-400';
+
+                    logoContainer.classList.remove('bg-white', 'border', 'border-gray-200', 'p-1');
+                    logoContainer.classList.add(fallbackColor, 'text-white', 'font-bold', 'text-2xl');
+                    logoContainer.textContent = initial;
+                };
+
+                logoContainer.appendChild(logoImage);
+                card.appendChild(logoContainer);
+                // -------------------------
+
+                // 1. Main Content
+                const content = document.createElement('div');
+                content.className = 'flex-grow min-w-0 flex flex-col';
+
+                // Product Name
+                const nameLink = document.createElement('a');
+                nameLink.href = product.url;
+                nameLink.target = '_blank';
+                nameLink.className = 'text-xl font-bold text-gray-900 hover:text-orange-600 transition duration-150';
+                nameLink.textContent = product.name;
+
+                // Description
+                const descP = document.createElement('p');
+                descP.className = 'text-gray-600 truncate mt-1 text-base';
+                descP.textContent = product.desc;
+
+                // --- CATEGORY PILLS ---
+                const tagContainer = document.createElement('div');
+                tagContainer.className = 'flex flex-wrap gap-2 mt-3 mb-3';
+
+                product.tags.forEach(tag => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'inline-block px-3 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 transition';
+                    tagSpan.textContent = tag;
+                    tagContainer.appendChild(tagSpan);
+                });
+                // -------------------------
+
+                // --- VISIT BUTTON ---
+                const visitLink = document.createElement('a');
+                visitLink.href = product.url;
+                visitLink.target = '_blank';
+                visitLink.className = 'w-max flex items-center p-2 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition duration-150 shadow-md active:scale-95';
+
+                const linkIcon = document.createElement('i');
+                linkIcon.className = 'icon-link w-4 h-4';
+                linkIcon.innerHTML = linkSvg;
+
+                visitLink.appendChild(linkIcon);
+                const visitText = document.createElement('span');
+                visitText.className = 'ml-2';
+                visitText.textContent = 'Visit Website';
+                visitLink.appendChild(visitText);
+                // -------------------------
+
+                content.appendChild(nameLink);
+                content.appendChild(descP);
+                content.appendChild(tagContainer);
+                content.appendChild(visitLink);
+
+                card.appendChild(content);
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Event listener to handle back/forward button clicks and manual hash changes
+        window.addEventListener('hashchange', () => {
+             // Hash now contains the slug (e.g., "audio-music")
+             const newSlug = window.location.hash.substring(1);
+
+             // 🚨 UPDATE: Look up the original category name using the slug map
+             const newCategory = categorySlugMap[newSlug] || 'All';
+
+             filterByCategory(newCategory);
+        });
+
+        // Initial load
+        window.onload = loadDataAndRender;
+
+        // Re-render on resize (optional, but keeps the view correct)
+        window.onresize = renderProducts;
+
+    </script>
+</body>
+</html>
