@@ -1,14 +1,78 @@
 Category,Tool Name,Website,Description
 Business Productivity,ChatGPT,chat.openai.com,"Conversational AI for content creation, coding, and automation"
+Business Productivity,Claude,claude.ai,"Advanced AI assistant for analysis, writing, and complex reasoning"
+Business Productivity,Notion AI,notion.so,"AI-powered notes, task automation, and project management"
+Business Productivity,Zapier,zapier.com,"No-code automation connecting 7,000+ apps with AI assistance"
+Business Productivity,Writer,writer.com,Enterprise AI writing with brand-safe compliance and consistency
+Business Productivity,Grammarly,grammarly.com,"AI grammar checking, plagiarism detection, and writing improvement"
+Business Productivity,Jasper,jasper.ai,"AI content creation for marketing copy, ads, and email campaigns"
+Business Productivity,Monday.com,monday.com,Work management platform with AI-powered project tracking
+Business Productivity,Asana,asana.com,Project management with AI task summaries and workflow automation
+Business Productivity,Motion,usemotion.com,AI calendar and task manager that auto-schedules your day
 Image Generation,Midjourney,midjourney.com,Artistic AI image generation with cinematic quality visuals
+Image Generation,DALL-E 3,openai.com/dall-e-3,OpenAI's image generator with complex prompt understanding
+Image Generation,Adobe Firefly,firefly.adobe.com,Commercially safe AI images integrated with Adobe Creative Cloud
+Image Generation,Stable Diffusion,stability.ai,Open-source customizable AI image generator for privacy
+Image Generation,Ideogram,ideogram.ai,AI image generator specializing in accurate text rendering
+Image Generation,Leonardo AI,leonardo.ai,Detailed fantasy and sci-fi artwork for game design
+Image Generation,Canva AI,canva.com,Beginner-friendly AI image generation with design templates
+Image Generation,Microsoft Designer,designer.microsoft.com,AI image creation for social media with instant templates
 Video Generation,Sora 2,openai.com/sora,OpenAI's cinematic AI video generator with long coherent storytelling
+Video Generation,Veo 3,deepmind.google/technologies/veo,Google's realistic video generator with native audio generation
+Video Generation,Runway,runwayml.com,Text-to-video with AI editing and motion capture features
+Video Generation,HeyGen,heygen.com,AI avatar generator with perfect lip-sync for business videos
+Video Generation,Synthesia,synthesia.io,Turn scripts into presenter-led videos in 140+ languages
+Video Generation,Kling AI,klingai.com,Photoreal human actors with best-in-class lip sync quality
+Video Generation,InVideo AI,invideo.io,AI video creation with text prompts and voice-overs
+Video Generation,Luma Dream Machine,lumalabs.ai,Fast realistic video generation from text and images
 Coding & Development,GitHub Copilot,github.com/features/copilot,AI pair programmer with real-time code suggestions
+Coding & Development,Cursor,cursor.sh,AI-first code editor with Agent mode for full task completion
+Coding & Development,Windsurf,windsurf.com,Agentic IDE with Cascade AI that remembers your codebase
+Coding & Development,Claude Code,claude.ai,Agentic coding tool with terminal integration and file editing
+Coding & Development,Replit Agent,replit.com,Browser-based AI coding with zero installation steps
+Coding & Development,Tabnine,tabnine.com,Privacy-focused AI code completion supporting 80+ languages
+Coding & Development,Amazon Q Developer,aws.amazon.com/q,AI assistant optimized for AWS cloud development
+Coding & Development,Qodo,qodo.ai,Enterprise code review with test generation and quality analysis
 Fitness & Health,FitnessAI,fitnessai.com,AI workout plans that optimize based on your performance
+Fitness & Health,Noom,noom.com,AI weight-loss app with behavioral science and habit tracking
+Fitness & Health,MyFitnessPal AI,myfitnesspal.com,AI nutrition tracking with barcode scanner and meal insights
+Fitness & Health,Freeletics,freeletics.com,Bodyweight and HIIT workouts with AI coach adaptation
+Fitness & Health,Dr. Muscle,dr-muscle.com,Science-based AI workout app with automated progression
+Fitness & Health,Fitbod,fitbod.me,Gym-focused strength training with smart recovery tracking
+Fitness & Health,Laiqa,laiqa.com,AI health coach combining Ayurveda for women's wellness
+Fitness & Health,WHOOP,whoop.com,"AI wearable tracking sleep, recovery, and strain"
 Audio & Music,ElevenLabs,elevenlabs.io,Realistic AI voice generation and cloning with emotional control
+Audio & Music,Suno,suno.ai,AI music generator creating full songs from text descriptions
+Audio & Music,Kits AI,kits.ai,Studio-quality AI voice conversion and custom voice models
+Audio & Music,Synthesizer V,dreamtonics.com/synthesizerv,Professional AI singing voice generator with detailed control
+Audio & Music,Voice.ai,voice.ai,Real-time voice changing for streamers and content creators
+Audio & Music,AIVA,aiva.ai,AI music composer for royalty-free background tracks
+Audio & Music,Riffusion,riffusion.com,AI music generation from lyrics with genre customization
+Audio & Music,Udio,udio.com,Create full songs with AI vocals and instrumentals
 Research & Analysis,Elicit,elicit.com,AI research assistant searching 138M+ academic papers
+Research & Analysis,Perplexity AI,perplexity.ai,AI-powered search engine with cited research answers
+Research & Analysis,Julius AI,julius.ai,Natural language data analysis and visualization tool
+Research & Analysis,Consensus,consensus.app,AI search over peer-reviewed research papers
+Research & Analysis,Litmaps,litmaps.com,Visualize citation networks and track research connections
+Research & Analysis,Scite,scite.ai,Citation analysis verifying if claims are supported or disputed
+Research & Analysis,ChatPDF,chatpdf.com,AI assistant for reading and analyzing PDF documents
+Research & Analysis,Power BI,powerbi.microsoft.com,Business intelligence with AI-powered data visualization
 Search & Discovery,Perplexity,perplexity.ai,AI search engine with real-time web results and citations
+Search & Discovery,Arc Search,arc.net,AI-powered browser with built-in search synthesis
+Search & Discovery,Google Gemini,gemini.google.com,Google's AI integrated across Workspace apps
+Search & Discovery,You.com,you.com,AI search combining multiple sources with privacy focus
 Writing & Content,Grammarly,grammarly.com,AI writing assistant with grammar and tone suggestions
+Writing & Content,Jasper,jasper.ai,AI content generation for marketing and blog posts
+Writing & Content,Rytr,rytr.me,Quick AI writing for social media and product descriptions
+Writing & Content,Sudowrite,sudowrite.com,AI writing tool specifically designed for fiction authors
+Writing & Content,QuillBot,quillbot.com,AI paraphrasing tool with grammar checking
+Writing & Content,Copy.ai,copy.ai,Marketing copy generation with AI templates
 Meetings & Communication,Fireflies.ai,fireflies.ai,AI meeting transcription and note-taking assistant
+Meetings & Communication,Otter.ai,otter.ai,Real-time transcription for meetings and interviews
+Meetings & Communication,Read AI,read.ai,Meeting analytics with sentiment analysis and coaching
+Meetings & Communication,Krisp,krisp.ai,AI noise cancellation for calls and meetings
 Presentation & Design,Canva,canva.com,AI-powered design platform with templates and Magic Studio
+Presentation & Design,Beautiful.ai,beautiful.ai,AI presentation maker with smart slide generation
+Presentation & Design,Gamma,gamma.app,AI presentation and document creation from prompts
 Interviews & Meetings,LockedIn AI,https://www.lockedinai.com/,
 Interviews & Meetings,Interview Monkey,https://interviewmonkey.ai/ai-interview-copilot,
